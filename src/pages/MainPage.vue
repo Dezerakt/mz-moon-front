@@ -10,22 +10,6 @@
   const error = ref<string | null>(null)
 
   onMounted(async () => {
-    // get songs
-    try {
-      const res = await fetch(`${backUrl}/catalog/song`)
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`)
-      }
-
-      const data: SongResponse = await res.json()
-      songs.value = data.data
-
-    } catch (err) {
-      error.value = (err as Error).message
-      console.error('Failed to fetch songs:', err)
-    }
-
     // get genres
     try {
       const res = await fetch(`${backUrl}/catalog/genre`)
@@ -70,25 +54,17 @@
     </n-carousel>
     <br>
 
-    <div v-if="songs">
-      Songs
-      <n-grid x-gap="12" :y-gap="8" :cols="4"ј>
-        <n-gi v-for="song in songs">
-          <div class="main-page-panel">
-            <img class="cover" :src="getImageUrl(song.uuid)" alt="">
-          </div>
-        </n-gi>
-      </n-grid>
-    </div>
 
-    <div v-if="genres">
-      Genres
-      <n-grid x-gap="12" :y-gap="8" :cols="4">
-        <n-gi v-for="genre in genres">
-          <div class="main-page-panel">
-            <img class="cover" :src="getImageUrl(genre.uuid)" alt="">
-          </div>
-        </n-gi>
+    <div style="padding-top: 50px;" v-if="genres">
+      <n-grid cols="1 s:3 m:4 l:5 xl:5 2xl:7" responsive="screen">
+        <n-grid-item class="main-page-panel" v-for="genre in genres">
+          <router-link class="genre-link" :to="`/genre/${genre.name}`">
+            <div class="cover-container">
+              <img class="cover" :src="getImageUrl(genre.uuid)" :alt="genre.name">
+            </div>
+            <h1>{{genre.name}}</h1>
+          </router-link>
+        </n-grid-item>
       </n-grid>
     </div>
   </div>
